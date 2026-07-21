@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#c0392b" />
+<meta name="description" content="中国語単語を効率よく暗記するための単語帳・テストアプリ" />
+<title>中文単語帳 ChineseTrainer</title>
+
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/icons/icon-192.png" />
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ヘッダー -->
+  <header class="app-header">
+    <button id="btn-back" class="icon-btn hidden" aria-label="戻る">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <h1 id="header-title">中文単語帳</h1>
+    <button id="btn-settings" class="icon-btn" aria-label="設定">
+      <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 13a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V19a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 007.9 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.14.6.62 1.06 1.22 1.22h.09a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+  </header>
+
+  <main id="main">
+
+    <!-- ホーム画面 -->
+    <section id="screen-home" class="screen">
+      <div class="deck-list" id="deck-list"><!-- JSで生成 --></div>
+      <p class="empty-hint hidden" id="home-empty-hint">単語帳がまだありません。<br>右下の「＋」から単語を取り込みましょう。</p>
+      <div class="fab-row">
+        <button id="btn-goto-import" class="fab" aria-label="単語を取り込む">＋</button>
+      </div>
+    </section>
+
+    <!-- 取り込み画面 -->
+    <section id="screen-import" class="screen hidden">
+      <label class="field-label" for="deck-name-input">課の名前</label>
+      <input id="deck-name-input" type="text" placeholder="例: 第一課" class="text-input" />
+
+      <label class="field-label" for="paste-textarea">単語リストを貼り付け</label>
+      <textarea id="paste-textarea" class="paste-area" placeholder="叫
+〜という
+
+专业
+専攻
+
+经济
+経済
+
+学习|xuéxí|学習"></textarea>
+
+      <div class="row-buttons">
+        <button id="btn-parse" class="btn btn-primary">読み込み</button>
+      </div>
+
+      <div id="preview-area" class="preview-area hidden">
+        <p class="preview-count"><span id="preview-count-num">0</span> 語を検出しました</p>
+        <ul id="preview-list" class="preview-list"></ul>
+        <div class="row-buttons">
+          <button id="btn-save-words" class="btn btn-primary">単語帳に保存</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- クイズ設定画面 -->
+    <section id="screen-quiz-setup" class="screen hidden">
+      <div class="setup-block">
+        <h2 class="setup-heading">対象の課</h2>
+        <div id="setup-decks" class="chip-group"></div>
+      </div>
+
+      <div class="setup-block">
+        <h2 class="setup-heading">出題モード</h2>
+        <div class="option-list" id="setup-quiz-type">
+          <label class="option-item"><input type="radio" name="quiz-type" value="pinyin_to_hanzi" checked><span>① ピンイン → 中国語</span></label>
+          <label class="option-item"><input type="radio" name="quiz-type" value="audio_to_hanzi"><span>② 音声 → 中国語</span></label>
+          <label class="option-item"><input type="radio" name="quiz-type" value="meaning_to_hanzi"><span>③ 意味 → 中国語</span></label>
+          <label class="option-item"><input type="radio" name="quiz-type" value="hanzi_to_meaning"><span>④ 中国語 → 意味</span></label>
+        </div>
+      </div>
+
+      <div class="setup-block">
+        <h2 class="setup-heading">出題方式</h2>
+        <div class="option-list" id="setup-order-mode">
+          <label class="option-item"><input type="radio" name="order-mode" value="shuffle" checked><span>シャッフル</span></label>
+          <label class="option-item"><input type="radio" name="order-mode" value="sequential"><span>順番通り</span></label>
+          <label class="option-item"><input type="radio" name="order-mode" value="weak"><span>苦手優先</span></label>
+          <label class="option-item"><input type="radio" name="order-mode" value="wrong_only"><span>間違えた問題だけ</span></label>
+          <label class="option-item"><input type="radio" name="order-mode" value="review_due"><span>復習（期限が来たもの）</span></label>
+        </div>
+      </div>
+
+      <div class="row-buttons">
+        <button id="btn-start-quiz" class="btn btn-primary btn-large">テスト開始</button>
+      </div>
+    </section>
+
+    <!-- クイズ画面 -->
+    <section id="screen-quiz" class="screen hidden">
+      <div class="quiz-progress">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <span id="progress-label">0 / 0</span>
+      </div>
+
+      <div class="quiz-card">
+        <p id="quiz-prompt" class="quiz-prompt"></p>
+        <button id="btn-speak" class="icon-btn speak-btn hidden" aria-label="発音を聞く">
+          <svg viewBox="0 0 24 24"><path d="M5 9v6h4l5 5V4L9 9H5z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <input id="answer-input" type="text" class="answer-input" placeholder="ここに入力" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" />
+
+      <div class="row-buttons">
+        <button id="btn-skip" class="btn btn-ghost">わからない</button>
+        <button id="btn-check" class="btn btn-primary">判定</button>
+      </div>
+
+      <div id="answer-feedback" class="answer-feedback hidden">
+        <p id="feedback-result" class="feedback-result"></p>
+        <div id="feedback-detail" class="feedback-detail"></div>
+        <div class="row-buttons">
+          <button id="btn-next" class="btn btn-primary btn-large">次へ</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- クイズ結果サマリー -->
+    <section id="screen-summary" class="screen hidden">
+      <div class="summary-card">
+        <h2>お疲れさまでした</h2>
+        <div class="summary-stats">
+          <div class="stat-box"><span id="summary-total" class="stat-num">0</span><span class="stat-label">出題数</span></div>
+          <div class="stat-box"><span id="summary-correct" class="stat-num">0</span><span class="stat-label">正解</span></div>
+          <div class="stat-box"><span id="summary-rate" class="stat-num">0%</span><span class="stat-label">正答率</span></div>
+        </div>
+      </div>
+      <div class="row-buttons">
+        <button id="btn-summary-retry" class="btn btn-primary">もう一度</button>
+        <button id="btn-summary-home" class="btn btn-ghost">ホームへ</button>
+      </div>
+    </section>
+
+    <!-- 履歴・統計画面 -->
+    <section id="screen-history" class="screen hidden">
+      <div class="summary-stats">
+        <div class="stat-box"><span id="history-days" class="stat-num">0</span><span class="stat-label">学習日数</span></div>
+        <div class="stat-box"><span id="history-words" class="stat-num">0</span><span class="stat-label">総単語数</span></div>
+        <div class="stat-box"><span id="history-rate" class="stat-num">0%</span><span class="stat-label">全体正答率</span></div>
+      </div>
+      <h2 class="setup-heading">苦手な単語 TOP10</h2>
+      <ul id="weak-word-list" class="preview-list"></ul>
+    </section>
+
+    <!-- 設定画面 -->
+    <section id="screen-settings" class="screen hidden">
+      <div class="setup-block">
+        <h2 class="setup-heading">テーマ</h2>
+        <div class="option-list">
+          <label class="option-item"><input type="radio" name="theme" value="auto"><span>端末に合わせる</span></label>
+          <label class="option-item"><input type="radio" name="theme" value="light"><span>ライト</span></label>
+          <label class="option-item"><input type="radio" name="theme" value="dark"><span>ダーク</span></label>
+        </div>
+      </div>
+
+      <div class="setup-block">
+        <h2 class="setup-heading">読み上げ速度</h2>
+        <input id="speech-rate-slider" type="range" min="0.5" max="1.5" step="0.05" value="0.85" class="slider" />
+        <div class="row-buttons">
+          <button id="btn-test-speech" class="btn btn-ghost">テスト再生</button>
+        </div>
+      </div>
+
+      <div class="setup-block">
+        <h2 class="setup-heading">課の管理</h2>
+        <div id="settings-deck-list" class="chip-group"></div>
+      </div>
+
+      <div class="setup-block">
+        <h2 class="setup-heading">バックアップ</h2>
+        <div class="row-buttons">
+          <button id="btn-export" class="btn btn-ghost">JSONで書き出し</button>
+          <button id="btn-import" class="btn btn-ghost">JSONから復元</button>
+        </div>
+        <input id="import-file-input" type="file" accept="application/json" class="hidden" />
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<!-- ピンイン自動生成用（利用可能な場合のみ使用。オフライン時は手動/パイプ形式にフォールバック） -->
+<script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3/dist/index.js" defer></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
