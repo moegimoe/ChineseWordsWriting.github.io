@@ -22,15 +22,23 @@
       <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
     <h1 id="header-title">中文単語帳</h1>
-    <button id="btn-settings" class="icon-btn" aria-label="設定">
-      <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 13a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V19a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 007.9 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.14.6.62 1.06 1.22 1.22h.09a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-    </button>
+    <div class="header-actions">
+      <button id="btn-reorder-toggle" class="icon-btn hidden" aria-label="並べ替え">
+        <svg viewBox="0 0 24 24"><path d="M8 7l4-4 4 4M8 17l4 4 4-4M12 3v18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button id="btn-settings" class="icon-btn" aria-label="設定">
+        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 13a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V19a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 007.9 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.14.6.62 1.06 1.22 1.22h.09a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+    </div>
   </header>
 
   <main id="main">
 
     <!-- ホーム画面 -->
     <section id="screen-home" class="screen">
+      <div class="home-toolbar">
+        <button id="btn-create-folder" class="btn btn-ghost btn-small">＋ フォルダを作成</button>
+      </div>
       <div class="deck-list" id="deck-list"><!-- JSで生成 --></div>
       <p class="empty-hint hidden" id="home-empty-hint">単語帳がまだありません。<br>右下の「＋」から単語を取り込みましょう。</p>
       <div class="fab-row">
@@ -40,8 +48,18 @@
 
     <!-- 取り込み画面 -->
     <section id="screen-import" class="screen hidden">
-      <label class="field-label" for="deck-name-input">課の名前</label>
-      <input id="deck-name-input" type="text" placeholder="例: 第一課" class="text-input" />
+      <label class="field-label" for="import-deck-select">追加先の課</label>
+      <select id="import-deck-select" class="text-input"></select>
+
+      <div id="new-deck-fields">
+        <label class="field-label" for="deck-name-input">新しい課の名前</label>
+        <input id="deck-name-input" type="text" placeholder="例: 第一課" class="text-input" />
+
+        <label class="field-label" for="new-deck-folder-select">フォルダ（任意）</label>
+        <select id="new-deck-folder-select" class="text-input">
+          <option value="">フォルダなし</option>
+        </select>
+      </div>
 
       <label class="field-label" for="paste-textarea">単語リストを貼り付け</label>
       <textarea id="paste-textarea" class="paste-area" placeholder="叫
@@ -65,6 +83,41 @@
         <div class="row-buttons">
           <button id="btn-save-words" class="btn btn-primary">単語帳に保存</button>
         </div>
+      </div>
+    </section>
+
+    <!-- 課の詳細（編集）画面 -->
+    <section id="screen-deck-detail" class="screen hidden">
+      <label class="field-label" for="deck-detail-name">課の名前</label>
+      <input id="deck-detail-name" type="text" class="text-input" />
+
+      <label class="field-label" for="deck-detail-folder">フォルダ</label>
+      <select id="deck-detail-folder" class="text-input">
+        <option value="">フォルダなし</option>
+      </select>
+
+      <div class="row-buttons">
+        <button id="btn-add-words-to-deck" class="btn btn-ghost">＋ 単語を追加</button>
+      </div>
+
+      <h2 class="setup-heading deck-detail-word-heading">単語一覧（<span id="deck-detail-word-count">0</span>語）</h2>
+      <ul id="deck-detail-word-list" class="preview-list editable-list"></ul>
+
+      <div class="row-buttons">
+        <button id="btn-delete-deck" class="btn btn-ghost btn-danger">この課を削除</button>
+      </div>
+    </section>
+
+    <!-- フォルダの詳細（編集）画面 -->
+    <section id="screen-folder-detail" class="screen hidden">
+      <label class="field-label" for="folder-detail-name">フォルダの名前</label>
+      <input id="folder-detail-name" type="text" class="text-input" />
+
+      <h2 class="setup-heading">このフォルダの課</h2>
+      <ul id="folder-detail-deck-list" class="preview-list editable-list"></ul>
+
+      <div class="row-buttons">
+        <button id="btn-delete-folder" class="btn btn-ghost btn-danger">フォルダを削除（中身は残ります）</button>
       </div>
     </section>
 
@@ -179,16 +232,26 @@
 
       <div class="setup-block">
         <h2 class="setup-heading">課の管理</h2>
+        <p class="field-hint">課をタップすると詳細（名前変更・単語編集・削除）を開けます。</p>
         <div id="settings-deck-list" class="chip-group"></div>
       </div>
 
       <div class="setup-block">
-        <h2 class="setup-heading">バックアップ</h2>
+        <h2 class="setup-heading">バックアップ（GitHub Gist）</h2>
+        <p class="field-hint">GitHubのPersonal Access Token（Gistへの書き込み権限が必要）を登録すると、全データをGistへバックアップ・復元できます。トークンはこの端末内にのみ保存されます。</p>
+
+        <label class="field-label" for="gist-token-input">Personal Access Token</label>
+        <input id="gist-token-input" type="password" class="text-input" placeholder="ghp_..." autocomplete="off" />
+
+        <label class="field-label" for="gist-id-input">Gist ID（初回バックアップ後に自動入力）</label>
+        <input id="gist-id-input" type="text" class="text-input" placeholder="未設定" />
+
+        <p id="gist-last-backup" class="field-hint">まだバックアップされていません</p>
+
         <div class="row-buttons">
-          <button id="btn-export" class="btn btn-ghost">JSONで書き出し</button>
-          <button id="btn-import" class="btn btn-ghost">JSONから復元</button>
+          <button id="btn-gist-backup" class="btn btn-primary">バックアップ</button>
+          <button id="btn-gist-restore" class="btn btn-ghost">復元</button>
         </div>
-        <input id="import-file-input" type="file" accept="application/json" class="hidden" />
       </div>
     </section>
 

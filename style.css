@@ -1,0 +1,588 @@
+/* =========================================================
+   中文単語帳 ChineseTrainer - スタイルシート
+   方針: 単語帳アプリ風。余白を広く、装飾を最小限に。
+   ========================================================= */
+
+:root {
+  --color-bg: #faf7f2;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1ece3;
+  --color-text: #2a2521;
+  --color-text-muted: #7a7268;
+  --color-accent: #c0392b;
+  --color-accent-strong: #9c2b20;
+  --color-accent-contrast: #ffffff;
+  --color-success: #2e7d4f;
+  --color-success-bg: #e6f4ea;
+  --color-error: #c0392b;
+  --color-error-bg: #fbe9e7;
+  --color-border: #e6ded2;
+  --radius-s: 10px;
+  --radius-m: 16px;
+  --radius-l: 24px;
+  --shadow-1: 0 1px 3px rgba(40, 30, 20, 0.08), 0 1px 2px rgba(40, 30, 20, 0.06);
+  --font-ui: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Segoe UI", Roboto, sans-serif;
+  --font-hanzi: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Hiragino Sans", var(--font-ui);
+}
+
+[data-theme="dark"] {
+  --color-bg: #17140f;
+  --color-surface: #221e18;
+  --color-surface-2: #2c2620;
+  --color-text: #f2ece1;
+  --color-text-muted: #a89d8c;
+  --color-accent: #e07a5f;
+  --color-accent-strong: #d1633f;
+  --color-accent-contrast: #1a1512;
+  --color-success: #6fcf97;
+  --color-success-bg: #1f2e24;
+  --color-error: #e07a5f;
+  --color-error-bg: #362119;
+  --color-border: #3a332a;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    --color-bg: #17140f;
+    --color-surface: #221e18;
+    --color-surface-2: #2c2620;
+    --color-text: #f2ece1;
+    --color-text-muted: #a89d8c;
+    --color-accent: #e07a5f;
+    --color-accent-strong: #d1633f;
+    --color-accent-contrast: #1a1512;
+    --color-success: #6fcf97;
+    --color-success-bg: #1f2e24;
+    --color-error: #e07a5f;
+    --color-error-bg: #362119;
+    --color-border: #3a332a;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- ヘッダー ---------- */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: max(14px, env(safe-area-inset-top)) 16px 14px;
+  position: sticky;
+  top: 0;
+  background: var(--color-bg);
+  z-index: 10;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.icon-btn.active {
+  background: var(--color-surface-2);
+  color: var(--color-accent);
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+.icon-btn:active { background: var(--color-surface-2); }
+.icon-btn svg { width: 22px; height: 22px; }
+
+/* ---------- メイン ---------- */
+#main {
+  flex: 1;
+  padding: 20px 16px calc(32px + env(safe-area-inset-bottom));
+}
+
+.screen.hidden { display: none; }
+.hidden { display: none !important; }
+
+/* ---------- ホーム / デッキ一覧 ---------- */
+.deck-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deck-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-m);
+  padding: 18px 18px;
+  box-shadow: var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+}
+
+.deck-card-title {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.deck-card-meta {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  display: flex;
+  gap: 14px;
+}
+
+.deck-card-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  overflow: hidden;
+}
+.deck-card-bar-fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 999px;
+}
+
+.empty-hint {
+  text-align: center;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  margin-top: 60px;
+  font-size: 15px;
+}
+
+.fab-row {
+  position: fixed;
+  right: max(20px, calc((100vw - 560px) / 2 + 20px));
+  bottom: calc(28px + env(safe-area-inset-bottom));
+  z-index: 20;
+}
+
+.fab {
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-size: 28px;
+  border: none;
+  box-shadow: 0 4px 14px rgba(192, 57, 43, 0.4);
+  cursor: pointer;
+  line-height: 1;
+}
+.fab:active { background: var(--color-accent-strong); }
+
+/* ---------- フォーム共通 ---------- */
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 18px 0 6px;
+}
+.field-label:first-child { margin-top: 0; }
+
+.text-input, .answer-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 17px;
+  font-family: var(--font-hanzi);
+}
+.text-input:focus, .answer-input:focus, .paste-area:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.paste-area {
+  width: 100%;
+  min-height: 220px;
+  padding: 14px 16px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 15px;
+  line-height: 1.6;
+  font-family: var(--font-hanzi);
+  resize: vertical;
+}
+
+.row-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: var(--radius-s);
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-primary { background: var(--color-accent); color: var(--color-accent-contrast); }
+.btn-primary:active { background: var(--color-accent-strong); }
+.btn-ghost { background: var(--color-surface-2); color: var(--color-text); }
+.btn-ghost:active { background: var(--color-border); }
+.btn-large { padding: 18px 16px; font-size: 17px; }
+
+/* ---------- 単語プレビュー ---------- */
+.preview-area { margin-top: 22px; }
+.preview-count { font-size: 14px; color: var(--color-text-muted); margin-bottom: 8px; }
+.preview-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: var(--color-surface);
+}
+.preview-list li {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+}
+.preview-list li:last-child { border-bottom: none; }
+.preview-hanzi { font-family: var(--font-hanzi); font-weight: 700; }
+.preview-meaning { color: var(--color-text-muted); text-align: right; }
+
+/* ---------- クイズ設定 ---------- */
+.setup-block { margin-bottom: 26px; }
+.setup-heading {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin: 0 0 10px;
+  text-transform: none;
+}
+
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 14px;
+  cursor: pointer;
+}
+.chip.selected {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-weight: 700;
+}
+
+.option-list { display: flex; flex-direction: column; gap: 8px; }
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 14px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 15px;
+  cursor: pointer;
+}
+.option-item input { accent-color: var(--color-accent); width: 18px; height: 18px; }
+
+/* ---------- クイズ画面 ---------- */
+.quiz-progress { margin-bottom: 20px; }
+.progress-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.progress-fill { height: 100%; background: var(--color-accent); border-radius: 999px; transition: width 0.25s ease; }
+#progress-label { font-size: 12px; color: var(--color-text-muted); }
+
+.quiz-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-l);
+  padding: 48px 20px;
+  text-align: center;
+  box-shadow: var(--shadow-1);
+  border: 1px solid var(--color-border);
+  margin-bottom: 20px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.quiz-prompt {
+  font-size: 34px;
+  font-weight: 700;
+  font-family: var(--font-hanzi);
+  margin: 0;
+  word-break: break-word;
+}
+.speak-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  color: var(--color-accent);
+}
+.speak-btn svg { width: 26px; height: 26px; }
+.speak-btn:active { background: var(--color-border); }
+
+.answer-input { text-align: center; font-size: 20px; }
+
+.answer-feedback {
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: var(--radius-m);
+  background: var(--color-surface-2);
+}
+.feedback-result { font-size: 19px; font-weight: 700; margin: 0 0 10px; }
+.feedback-result.correct { color: var(--color-success); }
+.feedback-result.wrong { color: var(--color-error); }
+.feedback-detail { font-size: 15px; line-height: 1.9; color: var(--color-text); }
+.feedback-detail .fd-hanzi { font-family: var(--font-hanzi); font-weight: 700; font-size: 20px; }
+.feedback-detail .fd-label { color: var(--color-text-muted); font-size: 12px; margin-right: 6px; }
+
+/* ---------- サマリー / 履歴 ---------- */
+.summary-card { text-align: center; margin-bottom: 10px; }
+.summary-stats {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0 8px;
+}
+.stat-box {
+  flex: 1;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.stat-num { font-size: 24px; font-weight: 700; color: var(--color-accent); }
+.stat-label { font-size: 12px; color: var(--color-text-muted); }
+
+/* ---------- スライダー ---------- */
+.slider {
+  width: 100%;
+  accent-color: var(--color-accent);
+  height: 30px;
+}
+
+/* ---------- トースト ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  background: var(--color-text);
+  color: var(--color-bg);
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  z-index: 100;
+  box-shadow: var(--shadow-1);
+}
+
+/* ---------- レスポンシブ（PC） ---------- */
+@media (min-width: 620px) {
+  #app { border-left: 1px solid var(--color-border); border-right: 1px solid var(--color-border); }
+}
+
+/* focus-visible: キーボード操作時の可視フォーカス */
+button:focus-visible, input:focus-visible, .deck-card:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* motion を抑えたい場合 */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* ---------- ホームツールバー / フォルダ表示 ---------- */
+.home-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.btn-small {
+  flex: none;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.btn-danger {
+  color: var(--color-error);
+}
+
+.folder-group {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
+  background: var(--color-surface-2);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.folder-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+}
+
+.folder-group-title {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.folder-group-title svg { width: 18px; height: 18px; opacity: 0.7; }
+
+.folder-group-decks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.small-icon-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
+.small-icon-btn:active { background: var(--color-border); }
+.small-icon-btn svg { width: 17px; height: 17px; }
+.small-icon-btn.disabled { opacity: 0.25; pointer-events: none; }
+
+.deck-card-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.deck-card-row .deck-card { flex: 1; }
+
+/* ---------- 編集可能な単語リスト（課の詳細画面） ---------- */
+.editable-list li {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.word-row-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.word-row-text { display: flex; flex-direction: column; gap: 2px; }
+.word-row-hanzi { font-family: var(--font-hanzi); font-weight: 700; font-size: 16px; }
+.word-row-pinyin { font-size: 12px; color: var(--color-text-muted); }
+.word-row-meaning { font-size: 13px; color: var(--color-text-muted); }
+
+.word-edit-form {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border);
+}
+.word-edit-form.open { display: flex; }
+.word-edit-form input {
+  padding: 10px 12px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-hanzi);
+  font-size: 14px;
+}
+.word-edit-form .row-buttons { margin-top: 0; }
+
+.field-hint {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin: 4px 0 14px;
+}
+
+/* ---------- クイズ設定のフォルダグループ chip 表示 ---------- */
+.chip-group-folder-label {
+  width: 100%;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin: 10px 0 -2px;
+}
+.chip-group-folder-label:first-child { margin-top: 0; }
+.chip.chip-folder {
+  border-color: var(--color-accent);
+}
